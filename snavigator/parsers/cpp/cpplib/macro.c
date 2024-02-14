@@ -36,6 +36,7 @@ MA 02111-1307, USA.
 #include "cpkeyw.h"
 #include "sn.h"
 #include "longstr.h"
+#include "mac.h"
 
 #define my_isxdigit(x) (isxdigit(x))
 #define my_isdigit(x) (isdigit(x))
@@ -54,7 +55,7 @@ MA 02111-1307, USA.
       return Token; \
    }
 
-int (*Paf_Word) (char *word,int len,char **parameter_list,char **macro);
+//int (*Paf_Word) (char *word,int len,char **parameter_list,char **macro);
 
 static SearchTable *pbtrMacro;
 static unsigned char *yyptr;
@@ -82,7 +83,7 @@ extern Macro_t f_MacroFind( sString_t sString )
 
    if( Paf_Word == 0 ) return 0;
 
-   if( pbtrMacro == 0 ) 
+   if( pbtrMacro == 0 )
    {
       pbtrMacro = SearchTableCreate(1000,SEARCH_HASH_TABLE,FreeMacroEntry);
    }
@@ -466,8 +467,8 @@ static Token_t my_TokenInput( void )
                 LexKeyWordTab[ihash].leng == yyleng &&
                 strncmp( LexKeyWordTab[ihash].pcName, (char *)yytext, yyleng ) == 0 )
             {
-               keyword = LexKeyWordTab[ihash].wLexId; 
-               is_cpp  = LexKeyWordTab[ihash].is_cpp; 
+               keyword = LexKeyWordTab[ihash].wLexId;
+               is_cpp  = LexKeyWordTab[ihash].is_cpp;
             }
             else
             {
@@ -641,7 +642,7 @@ static Token_t my_TokenInput( void )
                unput();
                d_TokenReturn( SN_ARROW )
             }
-               
+
          case '-':
             d_TokenReturn( SN_DECR )
 
@@ -683,7 +684,7 @@ static Token_t my_TokenInput( void )
             break;
 
          case '/':   /* comment */
-            while( input()) 
+            while( input())
             {
                if( yychar == '\n' )
                {
@@ -868,7 +869,7 @@ extern Token_t f_MacroMerge( Macro_t Macro, Token_t TokenBasic, Param_t Param, i
 
             Token = f_TokenDuplicate( TokenParameter );
             f_TokenAppend( &TokenReturn, Token );
-   
+
          END_WHILE
       }
       else
@@ -1025,7 +1026,7 @@ extern void f_MacroPrint( Macro_t Macro )
             , Macro->sStringName.text
             );
    }
-   
+
    __TokenPrint( Macro->Token );
    __TokenPrint( Macro->TokenProcessed );
 }
